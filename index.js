@@ -3,6 +3,10 @@ class House {
         this.name = name;
         this.rooms = [];
     }
+
+    addRoom(name,area) {
+        this.rooms.push(new Room(name,area));
+    }
 }
 
 
@@ -30,12 +34,45 @@ class HouseService {
 
     static updateHouse(house) {
         return $.ajax({
-            url: this.url + `/${house._id}`;
+            url: this.url + `/${house._id}`,
             dataType: 'json', 
             data: JSON.stringify(house),
             contentType: 'applcation/json',
             type: 'PUT'
         });
     }
+    static deleteHouse(ID){
+        return $.ajax({
+            url: this.url + `/${id}`,
+            type: 'DELETE'
+        });    
+    }
 }
-//15.24 mark 
+ 
+class DOMManager {
+    static houses; 
+
+    static getAllHouses() {
+        HouseService.getAllHouses().then(houses => this.render(houses));
+    }
+
+    static render(houses) {
+        this.houses = houses;
+        $(`#app`).empty();
+        for (let house of houses) {
+            $(`app`).prepend(
+                `<div id ="${house._id}" class="card">
+                    <div class = "card-header>
+                        <h2>${house.name}</h2>
+                    </div>
+                </div>
+                `
+            );
+        }
+    }
+}
+
+
+DOMManager.getAllHouses();
+
+//22:07 of video 1

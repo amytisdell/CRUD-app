@@ -9,7 +9,6 @@ class House {
     }
 }
 
-
 class Room {
     constructor(name, area) {
         this.name = name;
@@ -58,20 +57,39 @@ class DOMManager {
 
     static render(houses) {
         this.houses = houses;
-        $(`#app`).empty();
+        $('#app').empty();
         for (let house of houses) {
-            $(`app`).prepend(
-                `<div id ="${house._id}" class="card">
-                    <div class = "card-header>
-                        <h2>${house.name}</h2>
+            $('app').prepend(
+                `<div id= ${house._id()} class="card">
+                    <div class="card-header">
+                        // <h2>${house.name}</h2>
+                        <button class="btn btn-danger" onclick="DOMManager.deleteHouse(`${house._id}`)"
                     </div>
-                </div>
-                `
+                    <div class="card-body">
+                        <div class="card">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <input type="text" id="${house._id}-room-name" class="form-control" placeholder="Room name">
+                                </div>
+                                <div class="col-sm">
+                                    <input type="text" id="${house._id}-room-area" class="form-control" placeholder="Room area">
+                                </div>
+                            <button id="${house._id}-new-room" onclick="DOMManage.addRoom('${house._id}')" class="btn btn-primary form-control">add</button>
+                         </div>
+                    </div>
+                </div><br>`
             );
+            for (let room of house.rooms) {
+                $(`#${house._id}`),find('.card-body').append(
+                   `<p> 
+                   <span id="name=${room-_id}"><strong>Name:</strong> ${room.name}</span>
+                   <span id="area=${room-_id}"><strong>Area:</strong> ${room.name}</span>
+                   <button class="btn btn-danger onclick="DOMManager.deleteRoom('${house._id}', '${room._id}')"Delete> Delete Room</button>`
+                )
+            }
         }
     }
 }
-
 
 DOMManager.getAllHouses();
 

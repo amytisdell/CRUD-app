@@ -40,7 +40,7 @@ class HouseService {
             type: 'PUT'
         });
     }
-    static deleteHouse(ID){
+    static deleteHouse(Id){
         return $.ajax({
             url: this.url + `/${id}`,
             type: 'DELETE'
@@ -55,14 +55,61 @@ class DOMManager {
         HouseService.getAllHouses().then(houses => this.render(houses));
     }
 
+    static createHouse(name) {
+        HouseService.createHouse(new House(name))
+        .then (() => {
+            return HouseService.getAllHouses();
+        })
+        .then((houses) => this.render(houses)); 
+    }
+
+    static deleteHouse(_id) {
+        HouseService.deleteHouse(_id)
+        .then(() => {
+            return HouseService.getAllHouses();
+        })
+
+        .then((houses) => this.render(houses));
+    }
+
+    static addRoom(id) {
+        for (let house of this.houses) {
+            if (house._id == id) {
+                house.rooms.push(new Room ($(`#${house._id}-room-name`).val(), $(`#${house._id}-room-area`).val()));
+                HouseService.updateHouse(house )
+                .then(() => {
+                    return HouseService.getAllHouses();
+                })
+                .then((houses) => this.render(houses))
+            }
+        }
+    }
+
+    static deleteRoom(houseId, roomId) {
+        for (let house of this.houses) {
+            if (house._id == houseId) {
+                for (let room of house.rooms) {
+                    if (room._id == roomId) {
+                        house.rooms.splice(house.rooms.indexOf(room),1);
+                        HouseService.updateHouse(house)
+                        .then(() => {
+                            return HouseService.getAllHouses();
+                        })
+                        .then((houses) => this.render(houses));
+                    } 
+                }
+            }
+        }
+    }
+
     static render(houses) {
         this.houses = houses;
         $('#app').empty();
-        for (let house of houses) {
-            $('app').prepend(
-                `<div id= ${house._id()} class="card">
+        for (let house of houses){
+            $('#app').prepend(
+                `<div id="${house._id}" class="card">
                     <div class="card-header">
-                        // <h2>${house.name}</h2>
+                        <h2>${Placholder}</h2>
                         <button class="btn btn-danger" onclick="DOMManager.deleteHouse(`${house._id}`)"
                     </div>
                     <div class="card-body">
@@ -82,8 +129,8 @@ class DOMManager {
             for (let room of house.rooms) {
                 $(`#${house._id}`),find('.card-body').append(
                    `<p> 
-                   <span id="name=${room-_id}"><strong>Name:</strong> ${room.name}</span>
-                   <span id="area=${room-_id}"><strong>Area:</strong> ${room.name}</span>
+                   <span id="name=${room._id}"><strong>Name:</strong> ${room.name}</span>
+                   <span id="area=${room._id}"><strong>Area:</strong> ${room.name}</span>
                    <button class="btn btn-danger onclick="DOMManager.deleteRoom('${house._id}', '${room._id}')"Delete> Delete Room</button>`
                 )
             }
@@ -91,6 +138,11 @@ class DOMManager {
     }
 }
 
+
+$('#create-new-house').click(() => {
+    DOMManager.createHouse($('#new-house-name').val());
+    $('new-house-name').val('');
+});
+
 DOMManager.getAllHouses();
 
-//22:07 of video 1
